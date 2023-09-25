@@ -1,0 +1,62 @@
+---
+
+---
+
+<astro-multiselect class="flex flex-col flex-1 sm:w-[24rem] pb-16 gap-4">
+  <input class="max-w-full px-8 py-2 rounded shadow" placeholder="Search users...">
+  <ul class="flex-1 flex flex-wrap overflow-x-auto -mx-8 pl-8 content-start [&_li]:inline [&_li]:bg-gray-800 [&_li]:text-gray-100 [&_li]:px-4 [&_li]:py-1 [&_li]:rounded-2xl [&_li]:h-fit gap-2 [&_li]:font-bold [&_li]:hover:cursor-pointer hover:[&_li]:bg-red-600 [&_li]:whitespace-nowrap"></ul>
+</astro-multiselect>
+
+<script>
+  class MultiSelect extends HTMLElement {
+    list = this.querySelector('ul')!
+    users: {
+      email: string
+      name: string
+    }[] = [
+      {
+        email: 'test1@example.com',
+        name: 'Reuben Tier'
+      },
+      {
+        email: 'test2@example.com',
+        name: 'Kevin Zuniga Cuellar'
+      },
+      {
+        email: 'test3@example.com',
+        name: 'Sarah Rainsberger'
+      },
+      {
+        email: 'test4@example.com',
+        name: 'Chris Swithinbank'
+      },
+      {
+        email: 'test5@example.com',
+        name: 'Elian ☕️'
+      }
+    ]
+
+    constructor() {
+      super()
+      this.render()
+    }
+
+    render() {
+      this.list.innerHTML = ''
+      this.users.forEach(user => {
+        let el = document.createElement('li')
+        el.dataset.value = user.email
+        el.innerText = user.name
+        el.onclick = () => {
+          this.users = this.users.filter(u => u.email !== el.dataset.value)
+          el.remove()
+          this.render()
+        }
+        this.list.appendChild(el)
+      });
+      document.querySelector('textarea')!.value = '\n\n' + this.users.map(u => `Co-authored-by: ${u.name} <${u.email}>`).join('\n')
+    }
+  }
+
+  customElements.define('astro-multiselect', MultiSelect)
+</script>
